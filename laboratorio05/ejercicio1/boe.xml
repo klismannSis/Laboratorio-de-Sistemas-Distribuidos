@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE BOE SYSTEM "boe.dtd">
+<BOE>
+    <TITULO>BOLETIN OFICIAL DEL ESTADO</TITULO>
+    <FECHA>
+        <AAAA>2001</AAAA>
+        <MM>03</MM>
+        <DD>27</DD>
+    </FECHA>
+    <SUMARIO>
+        <SECCION>
+            <TIT-SECCION>I. Disposiciones Generales</TIT-SECCION>
+            <APARTADO>
+                <ORGANISMO>MINISTERIO DE ASUNTOS EXTERIORES</ORGANISMO>
+                <PARRAFO>
+                    <TEXTO>
+                        <LEY>Ley 1/2001 de 5 de marzo</LEY>, de la cesión gratuita
+                        a las Comunidades Autónomas el Impuesto sobre Animales y
+                        Cosas establecido por el <RD>REAL DECRETO 13/1991</RD>.
+                    </TEXTO>
+                    <PAGINA>11290</PAGINA>
+                </PARRAFO>
+                <PARRAFO>
+                    <TEXTO>
+                        <ORDEN>ORDEN de 28 de febrero de 2001</ORDEN> por la ...
+                    </TEXTO>
+                    <PAGINA>11290</PAGINA>
+                    <PAGINA>11291</PAGINA>
+                </PARRAFO>
+            </APARTADO>
+        </SECCION>
+    </SUMARIO>
+</BOE>
