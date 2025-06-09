@@ -9,6 +9,7 @@ public class MainApp {
     private static final DepartamentoDAO dDao = new DepartamentoDAO();
     private static final IngenieroDAO iDao = new IngenieroDAO();
     private static final ProyectoDAO pDao = new ProyectoDAO();
+    private static final AsignacionDAO aDao = new AsignacionDAO();
 
     public static void main(String[] args) throws Exception {
         int opcion;
@@ -23,8 +24,11 @@ public class MainApp {
             System.out.println("7. Insertar Proyecto");
             System.out.println("8. Actualizar Proyecto");
             System.out.println("9. Eliminar Proyecto");
-            System.out.println("10. Listar Proyectos por Departamento");
-            System.out.println("11. Listar Ingenieros por Proyecto");
+            System.out.println("10. Insertar Asignación");
+            System.out.println("11. Actualizar Asignación");
+            System.out.println("12. Eliminar Asignación");
+            System.out.println("13. Listar Proyectos por Departamento");
+            System.out.println("14. Listar Ingenieros por Proyecto");
             System.out.println("0. Salir");
             System.out.print("Seleccione una opción: ");
             opcion = Integer.parseInt(sc.nextLine());
@@ -38,8 +42,11 @@ public class MainApp {
                 case 7: insertarProyecto(); break;
                 case 8: actualizarProyecto(); break;
                 case 9: eliminarProyecto(); break;
-                case 10: listarProyectosPorDpto(); break;
-                case 11: listarIngenierosPorProyecto(); break;
+                case 10: insertarAsignacion(); break;
+                case 11: actualizarAsignacion(); break;
+                case 12: eliminarAsignacion(); break;
+                case 13: listarProyectosPorDpto(); break;
+                case 14: listarIngenierosPorProyecto(); break;
             }
         } while (opcion != 0);
     }
@@ -104,13 +111,12 @@ public class MainApp {
 
     // --- Proyecto ---
     private static void insertarProyecto() throws Exception {
-        System.out.print("ID Departamento: "); int idDpto = Integer.parseInt(sc.nextLine());
         System.out.print("Nombre: "); String nombre = sc.nextLine();
         System.out.print("Fecha inicio (YYYY-MM-DD): "); String fechaInicio = sc.nextLine();
         System.out.print("Fecha fin (YYYY-MM-DD, opcional): "); String fechaFin = sc.nextLine();
         java.time.LocalDate inicio = java.time.LocalDate.parse(fechaInicio);
         java.time.LocalDate fin = fechaFin.isEmpty() ? null : java.time.LocalDate.parse(fechaFin);
-        Proyecto p = new Proyecto(idDpto, nombre, inicio, fin);
+        Proyecto p = new Proyecto(0, nombre, inicio, fin);
         if (pDao.insertar(p)) {
             System.out.println("→ Insertado con ID " + p.getIdProy());
         }
@@ -131,6 +137,33 @@ public class MainApp {
         System.out.print("ID Proyecto: "); int id = Integer.parseInt(sc.nextLine());
         if (pDao.eliminar(id)) {
             System.out.println("→ Eliminado correctamente");
+        }
+    }
+
+    // --- Asignación ---
+    private static void insertarAsignacion() throws Exception {
+        System.out.print("ID Ingeniero: "); int idIng = Integer.parseInt(sc.nextLine());
+        System.out.print("ID Proyecto: "); int idProy = Integer.parseInt(sc.nextLine());
+        System.out.print("Rol en el Proyecto: "); String rol = sc.nextLine();
+        Asignacion a = new Asignacion(0, idIng, idProy, rol);
+        if (aDao.insertar(a)) {
+            System.out.println("→ Asignación insertada con ID " + a.getIdAsignacion());
+        }
+    }
+    private static void actualizarAsignacion() throws Exception {
+        System.out.print("ID Asignación: "); int id = Integer.parseInt(sc.nextLine());
+        System.out.print("ID Ingeniero: "); int idIng = Integer.parseInt(sc.nextLine());
+        System.out.print("ID Proyecto: "); int idProy = Integer.parseInt(sc.nextLine());
+        System.out.print("Rol en el Proyecto: "); String rol = sc.nextLine();
+        Asignacion a = new Asignacion(id, idIng, idProy, rol);
+        if (aDao.actualizar(a)) {
+            System.out.println("→ Asignación actualizada correctamente");
+        }
+    }
+    private static void eliminarAsignacion() throws Exception {
+        System.out.print("ID Asignación: "); int id = Integer.parseInt(sc.nextLine());
+        if (aDao.eliminar(id)) {
+            System.out.println("→ Asignación eliminada correctamente");
         }
     }
 

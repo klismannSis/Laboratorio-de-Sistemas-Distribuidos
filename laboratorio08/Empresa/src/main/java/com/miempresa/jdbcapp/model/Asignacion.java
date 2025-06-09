@@ -3,6 +3,7 @@ package main.java.com.miempresa.jdbcapp.model;
 import java.time.LocalDateTime;
 
 public class Asignacion {
+    private int idAsignacion;
     private int idIng;
     private int idProy;
     private String rolProyecto;
@@ -10,10 +11,19 @@ public class Asignacion {
 
     public Asignacion() { }
 
-    public Asignacion(int idIng, int idProy, String rolProyecto) {
+    public Asignacion(int idAsignacion, int idIng, int idProy, String rolProyecto) {
+        this.idAsignacion = idAsignacion;
         this.idIng = idIng;
         this.idProy = idProy;
         this.rolProyecto = rolProyecto;
+    }
+
+    public int getIdAsignacion() {
+        return idAsignacion;
+    }
+
+    public void setIdAsignacion(int idAsignacion) {
+        this.idAsignacion = idAsignacion;
     }
 
     public int getIdIng() {

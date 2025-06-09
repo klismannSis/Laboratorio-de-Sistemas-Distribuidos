@@ -23,21 +23,19 @@ public class AsignacionDAO {
         }
     }
     public boolean actualizar(Asignacion a) throws SQLException {
-        String sql = "UPDATE Asignacion SET Rol_Proyecto=? WHERE IDIng=? AND IDProy=?";
+        String sql = "UPDATE Asignacion SET Rol_Proyecto=? WHERE IDAsignacion=?";
         try (Connection c = DbConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, a.getRolProyecto());
-            ps.setInt(2, a.getIdIng());
-            ps.setInt(3, a.getIdProy());
+            ps.setInt(2, a.getIdAsignacion());
             return ps.executeUpdate() > 0;
         }
     }
-    public boolean eliminar(int idIng, int idProy) throws SQLException {
-        String sql = "DELETE FROM Asignacion WHERE IDIng=? AND IDProy=?";
+    public boolean eliminar(int idAsignacion) throws SQLException {
+        String sql = "DELETE FROM Asignacion WHERE IDAsignacion=?";
         try (Connection c = DbConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setInt(1, idIng);
-            ps.setInt(2, idProy);
+            ps.setInt(1, idAsignacion);
             return ps.executeUpdate() > 0;
         }
     }
@@ -49,6 +47,7 @@ public class AsignacionDAO {
              ResultSet rs = s.executeQuery(sql)) {
             while (rs.next()) {
                 Asignacion a = new Asignacion(
+                    rs.getInt("IDAsignacion"),
                     rs.getInt("IDIng"),
                     rs.getInt("IDProy"),
                     rs.getString("Rol_Proyecto")
