@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.miempresa.jdbcapp.controller.DepartamentosController">
+    <!-- Margen general -->
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10" />
+    </padding>
+
+    <!-- Tabla de Departamentos en el centro -->
+    <center>
+        <TableView fx:id="tablaDepartamentos">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="50" />
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200" />
+                <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="100" />
+                <TableColumn fx:id="colFax" text="Fax" prefWidth="100" />
+            </columns>
+        </TableView>
+    </center>
+
+    <!-- Formulario y botones en la parte inferior -->
+    <bottom>
+        <VBox spacing="10">
+            <HBox spacing="10">
+                <Label text="Nombre:" />
+                <TextField fx:id="txtNombre" HBox.hgrow="ALWAYS" />
+                <Label text="Teléfono:" />
+                <TextField fx:id="txtTelefono" prefWidth="120" />
+                <Label text="Fax:" />
+                <TextField fx:id="txtFax" prefWidth="120" />
+            </HBox>
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button fx:id="btnInsertar" text="Insertar" />
+                <Button fx:id="btnActualizar" text="Actualizar" />
+                <Button fx:id="btnEliminar" text="Eliminar" />
+                <Button fx:id="btnRefrescar" text="Refrescar" />
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>
