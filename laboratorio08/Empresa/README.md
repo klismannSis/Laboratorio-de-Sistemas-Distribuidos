@@ -1,9 +1,9 @@
-# Empresa Project
+# Proyecto Empresa
 
-## Overview
-This project is a JavaFX application structured using Maven. It serves as a template for building Java applications with a graphical user interface.
+## Descripción general
+Este proyecto es una aplicación JavaFX estructurada usando Maven. Sirve como plantilla para construir aplicaciones Java con una interfaz gráfica de usuario.
 
-## Project Structure
+## Estructura del proyecto
 ```
 Empresa
 ├── src
@@ -31,32 +31,39 @@ Empresa
 └── README.md
 ```
 
-## Setup Instructions
-1. **Clone the repository**: 
+## Instrucciones de configuración
+1. **Clona el repositorio**: 
    ```bash
    git clone <repository-url>
    cd Empresa
    ```
 
-2. **Build the project**: 
-   Use Maven to build the project.
+2. **Compila el proyecto**: 
+   Usa Maven para compilar el proyecto.
    ```bash
    mvn clean install
    ```
 
-3. **Run the application**: 
-   After building, you can run the application using:
+3. **Ejecuta la aplicación**: 
+   Después de compilar, puedes ejecutar la aplicación con:
    ```bash
    mvn javafx:run
    ```
 
-## Usage
-- The main application logic is contained in `App.java`.
-- The user interface is defined in `mainview.fxml`.
-- Test cases for the application can be found in `AppTest.java`.
+## Uso
+- La lógica principal de la aplicación se encuentra en `App.java`.
+- La interfaz de usuario está definida en `mainview.fxml`.
+- Los casos de prueba de la aplicación están en `AppTest.java`.
 
-## Dependencies
-This project uses Maven for dependency management. Ensure you have Maven installed to manage the project's dependencies effectively.
+## Dependencias
+Este proyecto utiliza Maven para la gestión de dependencias. Asegúrate de tener Maven instalado para gestionar correctamente las dependencias del proyecto.
 
-## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
+## Licencia
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
+
+## Ejecución gráfica con Java Swing
+El proyecto también cuenta con una ejecución gráfica utilizando Java Swing. Puedes encontrar la clase principal en la siguiente ruta:
+
+```
+main.java.com.miempresa.jdbcapp.ui.MainApp.java
+```
