@@ -4,7 +4,13 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "com.miempresa.jdbcapp.view.App",
+            "projectName": "Empresa"
+        },
         {
             "type": "java",
             "name": "Current File",
@@ -15,11 +21,16 @@
             "type": "java",
             "name": "MainApp",
             "request": "launch",
-            "mainClass": "main.java.com.miempresa.jdbcapp.ui.MainApp",
-            "projectName": "Empresa_921e8617",
-            "vmArgs": "--module-path C:/java/openjfx-17.0.15_windows-x64_bin-sdk/javafx-sdk-17.0.15/lib --add-modules javafx.controls,javafx.fxml",
+            "mainClass": "com.miempresa.jdbcapp.ui.MainApp",
+            "projectName": "Empresa"
+        },
+        {
+            "type": "java",
+            "name": "Lanzar JavaFX Empresa SD",
+            "request": "launch",
+            "mainClass": "com.miempresa.jdbcapp.view.App",
+            "vmArgs": "--module-path \"C:/java/openjfx-17.0.15_windows-x64_bin-sdk/javafx-sdk-17.0.15/lib\" --add-modules javafx.controls,javafx.fxml -Dprism.order=sw",
             "args": ""
-            
         }
     ]
 }

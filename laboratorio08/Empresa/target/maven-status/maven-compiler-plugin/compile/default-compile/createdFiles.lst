@@ -1,0 +1,17 @@
+com\miempresa\jdbcapp\dao\DepartamentoDAO.class
+com\miempresa\jdbcapp\model\Proyecto.class
+com\miempresa\jdbcapp\dao\AsignacionDAO.class
+com\miempresa\jdbcapp\controller\DepartamentoInputController.class
+com\miempresa\jdbcapp\util\DbConnection.class
+com\miempresa\jdbcapp\controller\DepartamentosController$1.class
+com\miempresa\jdbcapp\model\Ingeniero.class
+com\miempresa\jdbcapp\ui\MainApp.class
+com\miempresa\jdbcapp\controller\MainController.class
+com\miempresa\jdbcapp\dao\ProyectoDAO.class
+com\miempresa\jdbcapp\model\Asignacion.class
+com\miempresa\jdbcapp\controller\ProyectoInputController.class
+com\miempresa\jdbcapp\controller\DepartamentosController.class
+com\miempresa\jdbcapp\dao\IngenieroDAO.class
+com\miempresa\jdbcapp\model\Departamento.class
+com\miempresa\jdbcapp\controller\IngenieroInputController.class
+com\miempresa\jdbcapp\view\App.class

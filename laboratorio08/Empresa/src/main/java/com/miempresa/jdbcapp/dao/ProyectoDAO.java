@@ -1,14 +1,17 @@
-package main.java.com.miempresa.jdbcapp.dao;
+package com.miempresa.jdbcapp.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.sql.Date;
 
-import main.java.com.miempresa.jdbcapp.model.Proyecto;
-import main.java.com.miempresa.jdbcapp.util.DbConnection;
+import com.miempresa.jdbcapp.model.Proyecto;
+import com.miempresa.jdbcapp.util.DbConnection;
 
 public class ProyectoDAO {
     public boolean insertar(Proyecto p) throws SQLException {
@@ -45,5 +48,31 @@ public class ProyectoDAO {
             ps.setInt(1, idProy);
             return ps.executeUpdate() > 0;
         }
+    }
+
+    public List<Proyecto> listar() throws Exception {
+        List<Proyecto> lista = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = DbConnection.getConnection();
+            ps = conn.prepareStatement("SELECT IDProy, Nombre, Fec_Inicio, Fec_Termino FROM Proyecto");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("IDProy");
+                String nombre = rs.getString("Nombre");
+                LocalDate fechaInicio = rs.getDate("Fec_Inicio").toLocalDate();
+                Date fechaFinDate = rs.getDate("Fec_Termino");
+                LocalDate fechaFin = (fechaFinDate != null) ? fechaFinDate.toLocalDate() : null;
+                Proyecto p = new Proyecto(id, nombre, fechaInicio, fechaFin);
+                lista.add(p);
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (conn != null) conn.close();
+        }
+        return lista;
     }
 }

@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "TestFX",
+            "request": "launch",
+            "mainClass": "main.java.com.miempresa.jdbcapp.view.TestFX",
+            "projectName": "Empresa_921e8617",
+            "vmArgs": "--module-path \"C:/java/openjfx-17.0.15_windows-x64_bin-sdk/javafx-sdk-17.0.15/lib\" --add-modules javafx.controls,javafx.fxml -Dprism.order=sw",
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "Lanzar JavaFX Empresa SD",
+            "request": "launch",
+            "mainClass": "main.java.com.miempresa.jdbcapp.view.App",
+            "vmArgs": "--module-path \"C:/java/openjfx-17.0.15_windows-x64_bin-sdk/javafx-sdk-17.0.15/lib\" --add-modules javafx.controls,javafx.fxml -Dprism.order=sw",
+            "args": ""
+        }
+    ]
+}

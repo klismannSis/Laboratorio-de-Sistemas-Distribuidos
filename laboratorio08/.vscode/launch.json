@@ -1,0 +1,44 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "App",
+            "projectName": "laboratorio08_3ca07dbd"
+        },
+        {
+            "type": "java",
+            "name": "MainApp",
+            "request": "launch",
+            "mainClass": "main.java.com.miempresa.jdbcapp.ui.MainApp",
+            "projectName": "laboratorio08_3ca07dbd"
+        },
+        {
+            "type": "java",
+            "name": "Lanzar JavaFX Empresa SD",
+            "request": "launch",
+            "mainClass": "main.java.com.miempresa.jdbcapp.view.App",
+            "vmArgs": "--module-path \"C:/java/openjfx-17.0.15_windows-x64_bin-sdk/javafx-sdk-17.0.15/lib\" --add-modules javafx.controls,javafx.fxml -Dprism.order=sw",
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "TestFX",
+            "request": "launch",
+            "mainClass": "main.java.com.miempresa.jdbcapp.view.TestFX",
+            "projectName": "laboratorio08_3ca07dbd"
+        }
+    ]
+}

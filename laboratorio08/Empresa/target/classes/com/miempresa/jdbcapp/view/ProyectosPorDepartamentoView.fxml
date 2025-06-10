@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.miempresa.controllers.ProyectosPorDepartamentoController"
+            prefWidth="450" prefHeight="400">
+    <top>
+        <Label fx:id="lblTitulo" text="Proyectos en el Departamento ___"
+               style="-fx-font-size: 20px; -fx-font-weight: bold;"
+               BorderPane.alignment="CENTER">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10" />
+            </padding>
+        </Label>
+    </top>
+    <center>
+        <TableView fx:id="tableProyectos" prefWidth="430" prefHeight="300">
+            <BorderPane.margin>
+                <Insets top="10" right="10" bottom="10" left="10" />
+            </BorderPane.margin>
+            <columns>
+                <TableColumn fx:id="colNombre" text="Nombre del Proyecto" prefWidth="300" />
+                <TableColumn fx:id="colAcciones" text="Acciones" prefWidth="120" />
+            </columns>
+        </TableView>
+    </center>
+    <bottom>
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10" />
+            </padding>
+            <Button text="Atrás" fx:id="btnAtras" onAction="#onAtras"/>
+        </HBox>
+    </bottom>
+</BorderPane>

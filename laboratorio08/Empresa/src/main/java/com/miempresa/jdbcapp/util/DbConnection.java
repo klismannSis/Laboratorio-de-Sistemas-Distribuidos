@@ -1,4 +1,4 @@
-package main.java.com.miempresa.jdbcapp.util;
+package com.miempresa.jdbcapp.util;
 
 import java.sql.*;
 import java.util.logging.*;
@@ -7,7 +7,7 @@ public class DbConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/Empresa_SD"
         + "?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true";
     private static final String USER = "sd_user";
-    private static final String PASS = "TuPasswordSeguro";
+    private static final String PASS = "TuPasswordSeguroRol_Proyecto";
     private static final Logger LOGGER = Logger.getLogger(DbConnection.class.getName());
 
     private DbConnection() { }

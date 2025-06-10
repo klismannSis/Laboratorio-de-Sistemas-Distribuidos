@@ -1,4 +1,4 @@
-package main.java.com.miempresa.jdbcapp.dao;
+package com.miempresa.jdbcapp.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.sql.Statement;
 
-import main.java.com.miempresa.jdbcapp.model.Ingeniero;
-import main.java.com.miempresa.jdbcapp.util.DbConnection;
+import com.miempresa.jdbcapp.model.Ingeniero;
+import com.miempresa.jdbcapp.util.DbConnection;
 
 public class IngenieroDAO {
     public boolean insertar(Ingeniero i) throws SQLException {
@@ -72,6 +72,34 @@ public class IngenieroDAO {
                     lista.add(ing);
                 }
             }
+        }
+        return lista;
+    }
+
+    public List<Ingeniero> listar() throws Exception {
+        List<Ingeniero> lista = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DbConnection.getConnection();
+            stmt = conn.prepareStatement("SELECT IDIng, IDDpto, Nombre, Apellido, Especialidad, Cargo FROM Ingeniero");
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                Ingeniero i = new Ingeniero(
+                    rs.getInt("IDIng"),
+                    rs.getInt("IDDpto"),
+                    rs.getString("Nombre"),
+                    rs.getString("Apellido"),
+                    rs.getString("Especialidad"),
+                    rs.getString("Cargo")
+                );
+                lista.add(i);
+            }
+        } finally {
+            if (rs != null) try { rs.close(); } catch (Exception ignore) {}
+            if (stmt != null) try { stmt.close(); } catch (Exception ignore) {}
+            if (conn != null) try { conn.close(); } catch (Exception ignore) {}
         }
         return lista;
     }

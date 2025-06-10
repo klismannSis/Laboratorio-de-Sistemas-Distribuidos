@@ -1,184 +1,373 @@
-package main.java.com.miempresa.jdbcapp.ui;
+package com.miempresa.jdbcapp.ui;
 
-import main.java.com.miempresa.jdbcapp.dao.*;
-import main.java.com.miempresa.jdbcapp.model.*;
-import java.util.*;
+import com.miempresa.jdbcapp.dao.*;
+import com.miempresa.jdbcapp.model.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.*;
+import java.time.LocalDate;
+import java.util.List;
 
-public class MainApp {
-    private static final Scanner sc = new Scanner(System.in);
-    private static final DepartamentoDAO dDao = new DepartamentoDAO();
-    private static final IngenieroDAO iDao = new IngenieroDAO();
-    private static final ProyectoDAO pDao = new ProyectoDAO();
-    private static final AsignacionDAO aDao = new AsignacionDAO();
+public class MainApp extends JFrame {
+    private final DepartamentoDAO dDao = new DepartamentoDAO();
+    private final IngenieroDAO iDao = new IngenieroDAO();
+    private final ProyectoDAO pDao = new ProyectoDAO();
+    private final AsignacionDAO aDao = new AsignacionDAO();
 
-    public static void main(String[] args) throws Exception {
-        int opcion;
-        do {
-            System.out.println("\n--- Menú Principal ---");
-            System.out.println("1. Insertar Departamento");
-            System.out.println("2. Actualizar Departamento");
-            System.out.println("3. Eliminar Departamento");
-            System.out.println("4. Insertar Ingeniero");
-            System.out.println("5. Actualizar Ingeniero");
-            System.out.println("6. Eliminar Ingeniero");
-            System.out.println("7. Insertar Proyecto");
-            System.out.println("8. Actualizar Proyecto");
-            System.out.println("9. Eliminar Proyecto");
-            System.out.println("10. Insertar Asignación");
-            System.out.println("11. Actualizar Asignación");
-            System.out.println("12. Eliminar Asignación");
-            System.out.println("13. Listar Proyectos por Departamento");
-            System.out.println("14. Listar Ingenieros por Proyecto");
-            System.out.println("0. Salir");
-            System.out.print("Seleccione una opción: ");
-            opcion = Integer.parseInt(sc.nextLine());
-            switch (opcion) {
-                case 1: insertarDepartamento(); break;
-                case 2: actualizarDepartamento(); break;
-                case 3: eliminarDepartamento(); break;
-                case 4: insertarIngeniero(); break;
-                case 5: actualizarIngeniero(); break;
-                case 6: eliminarIngeniero(); break;
-                case 7: insertarProyecto(); break;
-                case 8: actualizarProyecto(); break;
-                case 9: eliminarProyecto(); break;
-                case 10: insertarAsignacion(); break;
-                case 11: actualizarAsignacion(); break;
-                case 12: eliminarAsignacion(); break;
-                case 13: listarProyectosPorDpto(); break;
-                case 14: listarIngenierosPorProyecto(); break;
+    public MainApp() {
+        setTitle("Gestión de Empresa");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(900, 600);
+        setLocationRelativeTo(null);
+
+        JTabbedPane tabs = new JTabbedPane();
+
+        tabs.addTab("Departamentos", departamentoPanel());
+        tabs.addTab("Ingenieros", ingenieroPanel());
+        tabs.addTab("Proyectos", proyectoPanel());
+        tabs.addTab("Asignaciones", asignacionPanel());
+        tabs.addTab("Proyectos por Dpto", proyectosPorDptoPanel());
+        tabs.addTab("Ingenieros por Proyecto", ingenierosPorProyectoPanel());
+
+        add(tabs);
+    }
+
+    // --- Departamento Panel ---
+    private JPanel departamentoPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Nombre", "Teléfono", "Fax"}, 0);
+        JTable table = new JTable(model);
+        refreshDepartamentos(model);
+
+        JPanel form = new JPanel(new GridLayout(0, 2, 5, 5));
+        JTextField id = new JTextField(), nombre = new JTextField(), tel = new JTextField(), fax = new JTextField();
+        form.add(new JLabel("ID (para actualizar/eliminar):")); form.add(id);
+        form.add(new JLabel("Nombre:")); form.add(nombre);
+        form.add(new JLabel("Teléfono:")); form.add(tel);
+        form.add(new JLabel("Fax:")); form.add(fax);
+
+        JPanel btns = new JPanel();
+        JButton insertar = new JButton("Insertar"), actualizar = new JButton("Actualizar"), eliminar = new JButton("Eliminar"), refrescar = new JButton("Refrescar");
+        btns.add(insertar); btns.add(actualizar); btns.add(eliminar); btns.add(refrescar);
+
+        insertar.addActionListener(e -> {
+            try {
+                Departamento d = new Departamento(0, nombre.getText(), tel.getText(), fax.getText());
+                if (dDao.insertar(d)) {
+                    JOptionPane.showMessageDialog(this, "Insertado con ID " + d.getId());
+                    refreshDepartamentos(model);
+                }
+            } catch (Exception ex) { showError(ex); }
+        });
+        actualizar.addActionListener(e -> {
+            try {
+                Departamento d = new Departamento(Integer.parseInt(id.getText()), nombre.getText(), tel.getText(), fax.getText());
+                if (dDao.actualizar(d)) {
+                    JOptionPane.showMessageDialog(this, "Actualizado correctamente");
+                    refreshDepartamentos(model);
+                }
+            } catch (Exception ex) { showError(ex); }
+        });
+        eliminar.addActionListener(e -> {
+            try {
+                if (DepartamentoDAO.eliminar(Integer.parseInt(id.getText()))) {
+                    JOptionPane.showMessageDialog(this, "Eliminado correctamente");
+                    refreshDepartamentos(model);
+                }
+            } catch (Exception ex) { showError(ex); }
+        });
+        refrescar.addActionListener(e -> refreshDepartamentos(model));
+
+        panel.add(new JScrollPane(table), BorderLayout.CENTER);
+        panel.add(form, BorderLayout.NORTH);
+        panel.add(btns, BorderLayout.SOUTH);
+        return panel;
+    }
+
+    private void refreshDepartamentos(DefaultTableModel model) {
+        try {
+            model.setRowCount(0);
+            for (Departamento d : dDao.listar()) {
+                model.addRow(new Object[]{d.getId(), d.getNombre(), d.getTelefono(), d.getFax()});
             }
-        } while (opcion != 0);
+        } catch (Exception ex) { showError(ex); }
     }
 
-    // --- Departamento ---
-    private static void insertarDepartamento() throws Exception {
-        System.out.print("Nombre: "); String nombre = sc.nextLine();
-        System.out.print("Teléfono: "); String tel = sc.nextLine();
-        System.out.print("Fax: ");      String fax = sc.nextLine();
-        Departamento d = new Departamento(0, nombre, tel, fax);
-        if (dDao.insertar(d)) {
-            System.out.println("→ Insertado con ID " + d.getId());
-        }
-    }
-    private static void actualizarDepartamento() throws Exception {
-        System.out.print("ID Departamento: "); int id = Integer.parseInt(sc.nextLine());
-        System.out.print("Nuevo nombre: "); String nombre = sc.nextLine();
-        System.out.print("Nuevo teléfono: "); String tel = sc.nextLine();
-        System.out.print("Nuevo fax: "); String fax = sc.nextLine();
-        Departamento d = new Departamento(id, nombre, tel, fax);
-        if (dDao.actualizar(d)) {
-            System.out.println("→ Actualizado correctamente");
-        }
-    }
-    private static void eliminarDepartamento() throws Exception {
-        System.out.print("ID Departamento: "); int id = Integer.parseInt(sc.nextLine());
-        if (dDao.eliminar(id)) {
-            System.out.println("→ Eliminado correctamente");
-        }
+    // --- Ingeniero Panel ---
+    private JPanel ingenieroPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "ID Dpto", "Nombre", "Apellido", "Especialidad", "Cargo"}, 0);
+        JTable table = new JTable(model);
+        refreshIngenieros(model);
+
+        JPanel form = new JPanel(new GridLayout(0, 2, 5, 5));
+        JTextField id = new JTextField(), idDpto = new JTextField(), nombre = new JTextField(), apellido = new JTextField(), especialidad = new JTextField(), cargo = new JTextField();
+        form.add(new JLabel("ID (para actualizar/eliminar):")); form.add(id);
+        form.add(new JLabel("ID Departamento:")); form.add(idDpto);
+        form.add(new JLabel("Nombre:")); form.add(nombre);
+        form.add(new JLabel("Apellido:")); form.add(apellido);
+        form.add(new JLabel("Especialidad:")); form.add(especialidad);
+        form.add(new JLabel("Cargo:")); form.add(cargo);
+
+        JPanel btns = new JPanel();
+        JButton insertar = new JButton("Insertar"), actualizar = new JButton("Actualizar"), eliminar = new JButton("Eliminar"), refrescar = new JButton("Refrescar");
+        btns.add(insertar); btns.add(actualizar); btns.add(eliminar); btns.add(refrescar);
+
+        insertar.addActionListener(e -> {
+            try {
+                Ingeniero i = new Ingeniero(0, Integer.parseInt(idDpto.getText()), nombre.getText(), apellido.getText(), especialidad.getText(), cargo.getText());
+                if (iDao.insertar(i)) {
+                    JOptionPane.showMessageDialog(this, "Insertado con ID " + i.getIdIng());
+                    refreshIngenieros(model);
+                }
+            } catch (Exception ex) { showError(ex); }
+        });
+        actualizar.addActionListener(e -> {
+            try {
+                Ingeniero i = new Ingeniero(Integer.parseInt(id.getText()), Integer.parseInt(idDpto.getText()), nombre.getText(), apellido.getText(), especialidad.getText(), cargo.getText());
+                if (iDao.actualizar(i)) {
+                    JOptionPane.showMessageDialog(this, "Actualizado correctamente");
+                    refreshIngenieros(model);
+                }
+            } catch (Exception ex) { showError(ex); }
+        });
+        eliminar.addActionListener(e -> {
+            try {
+                if (iDao.eliminar(Integer.parseInt(id.getText()))) {
+                    JOptionPane.showMessageDialog(this, "Eliminado correctamente");
+                    refreshIngenieros(model);
+                }
+            } catch (Exception ex) { showError(ex); }
+        });
+        refrescar.addActionListener(e -> refreshIngenieros(model));
+
+        panel.add(new JScrollPane(table), BorderLayout.CENTER);
+        panel.add(form, BorderLayout.NORTH);
+        panel.add(btns, BorderLayout.SOUTH);
+        return panel;
     }
 
-    // --- Ingeniero ---
-    private static void insertarIngeniero() throws Exception {
-        System.out.print("ID Departamento: "); int idDpto = Integer.parseInt(sc.nextLine());
-        System.out.print("Nombre: "); String nombre = sc.nextLine();
-        System.out.print("Apellido: "); String apellido = sc.nextLine();
-        System.out.print("Especialidad: "); String especialidad = sc.nextLine();
-        System.out.print("Cargo: "); String cargo = sc.nextLine();
-        Ingeniero i = new Ingeniero(0, idDpto, nombre, apellido, especialidad, cargo);
-        if (iDao.insertar(i)) {
-            System.out.println("→ Insertado con ID " + i.getIdIng());
-        }
-    }
-    private static void actualizarIngeniero() throws Exception {
-        System.out.print("ID Ingeniero: "); int id = Integer.parseInt(sc.nextLine());
-        System.out.print("ID Departamento: "); int idDpto = Integer.parseInt(sc.nextLine());
-        System.out.print("Nombre: "); String nombre = sc.nextLine();
-        System.out.print("Apellido: "); String apellido = sc.nextLine();
-        System.out.print("Especialidad: "); String especialidad = sc.nextLine();
-        System.out.print("Cargo: "); String cargo = sc.nextLine();
-        Ingeniero i = new Ingeniero(id, idDpto, nombre, apellido, especialidad, cargo);
-        if (iDao.actualizar(i)) {
-            System.out.println("→ Actualizado correctamente");
-        }
-    }
-    private static void eliminarIngeniero() throws Exception {
-        System.out.print("ID Ingeniero: "); int id = Integer.parseInt(sc.nextLine());
-        if (iDao.eliminar(id)) {
-            System.out.println("→ Eliminado correctamente");
-        }
+    private void refreshIngenieros(DefaultTableModel model) {
+        try {
+            model.setRowCount(0);
+            for (Ingeniero i : iDao.listar()) {
+                model.addRow(new Object[]{i.getIdIng(), i.getIdDpto(), i.getNombre(), i.getApellido(), i.getEspecialidad(), i.getCargo()});
+            }
+        } catch (Exception ex) { showError(ex); }
     }
 
-    // --- Proyecto ---
-    private static void insertarProyecto() throws Exception {
-        System.out.print("Nombre: "); String nombre = sc.nextLine();
-        System.out.print("Fecha inicio (YYYY-MM-DD): "); String fechaInicio = sc.nextLine();
-        System.out.print("Fecha fin (YYYY-MM-DD, opcional): "); String fechaFin = sc.nextLine();
-        java.time.LocalDate inicio = java.time.LocalDate.parse(fechaInicio);
-        java.time.LocalDate fin = fechaFin.isEmpty() ? null : java.time.LocalDate.parse(fechaFin);
-        Proyecto p = new Proyecto(0, nombre, inicio, fin);
-        if (pDao.insertar(p)) {
-            System.out.println("→ Insertado con ID " + p.getIdProy());
-        }
-    }
-    private static void actualizarProyecto() throws Exception {
-        System.out.print("ID Proyecto: "); int id = Integer.parseInt(sc.nextLine());
-        System.out.print("Nombre: "); String nombre = sc.nextLine();
-        System.out.print("Fecha inicio (YYYY-MM-DD): "); String fechaInicio = sc.nextLine();
-        System.out.print("Fecha fin (YYYY-MM-DD, opcional): "); String fechaFin = sc.nextLine();
-        java.time.LocalDate inicio = java.time.LocalDate.parse(fechaInicio);
-        java.time.LocalDate fin = fechaFin.isEmpty() ? null : java.time.LocalDate.parse(fechaFin);
-        Proyecto p = new Proyecto(id, nombre, inicio, fin);
-        if (pDao.actualizar(p)) {
-            System.out.println("→ Actualizado correctamente");
-        }
-    }
-    private static void eliminarProyecto() throws Exception {
-        System.out.print("ID Proyecto: "); int id = Integer.parseInt(sc.nextLine());
-        if (pDao.eliminar(id)) {
-            System.out.println("→ Eliminado correctamente");
-        }
+    // --- Proyecto Panel ---
+    private JPanel proyectoPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Nombre", "Fecha Inicio", "Fecha Fin"}, 0);
+        JTable table = new JTable(model);
+        refreshProyectos(model);
+
+        JPanel form = new JPanel(new GridLayout(0, 2, 5, 5));
+        JTextField id = new JTextField(), nombre = new JTextField(), inicio = new JTextField(), fin = new JTextField();
+        form.add(new JLabel("ID (para actualizar/eliminar):")); form.add(id);
+        form.add(new JLabel("Nombre:")); form.add(nombre);
+        form.add(new JLabel("Fecha inicio (YYYY-MM-DD):")); form.add(inicio);
+        form.add(new JLabel("Fecha fin (YYYY-MM-DD, opcional):")); form.add(fin);
+
+        JPanel btns = new JPanel();
+        JButton insertar = new JButton("Insertar"), actualizar = new JButton("Actualizar"), eliminar = new JButton("Eliminar"), refrescar = new JButton("Refrescar");
+        btns.add(insertar); btns.add(actualizar); btns.add(eliminar); btns.add(refrescar);
+
+        insertar.addActionListener(e -> {
+            try {
+                LocalDate ini = LocalDate.parse(inicio.getText());
+                LocalDate f = fin.getText().isEmpty() ? null : LocalDate.parse(fin.getText());
+                Proyecto p = new Proyecto(0, nombre.getText(), ini, f);
+                if (pDao.insertar(p)) {
+                    JOptionPane.showMessageDialog(this, "Insertado con ID " + p.getIdProy());
+                    refreshProyectos(model);
+                }
+            } catch (Exception ex) { showError(ex); }
+        });
+        actualizar.addActionListener(e -> {
+            try {
+                LocalDate ini = LocalDate.parse(inicio.getText());
+                LocalDate f = fin.getText().isEmpty() ? null : LocalDate.parse(fin.getText());
+                Proyecto p = new Proyecto(Integer.parseInt(id.getText()), nombre.getText(), ini, f);
+                if (pDao.actualizar(p)) {
+                    JOptionPane.showMessageDialog(this, "Actualizado correctamente");
+                    refreshProyectos(model);
+                }
+            } catch (Exception ex) { showError(ex); }
+        });
+        eliminar.addActionListener(e -> {
+            try {
+                if (pDao.eliminar(Integer.parseInt(id.getText()))) {
+                    JOptionPane.showMessageDialog(this, "Eliminado correctamente");
+                    refreshProyectos(model);
+                }
+            } catch (Exception ex) { showError(ex); }
+        });
+        refrescar.addActionListener(e -> refreshProyectos(model));
+
+        panel.add(new JScrollPane(table), BorderLayout.CENTER);
+        panel.add(form, BorderLayout.NORTH);
+        panel.add(btns, BorderLayout.SOUTH);
+        return panel;
     }
 
-    // --- Asignación ---
-    private static void insertarAsignacion() throws Exception {
-        System.out.print("ID Ingeniero: "); int idIng = Integer.parseInt(sc.nextLine());
-        System.out.print("ID Proyecto: "); int idProy = Integer.parseInt(sc.nextLine());
-        System.out.print("Rol en el Proyecto: "); String rol = sc.nextLine();
-        Asignacion a = new Asignacion(0, idIng, idProy, rol);
-        if (aDao.insertar(a)) {
-            System.out.println("→ Asignación insertada con ID " + a.getIdAsignacion());
-        }
-    }
-    private static void actualizarAsignacion() throws Exception {
-        System.out.print("ID Asignación: "); int id = Integer.parseInt(sc.nextLine());
-        System.out.print("ID Ingeniero: "); int idIng = Integer.parseInt(sc.nextLine());
-        System.out.print("ID Proyecto: "); int idProy = Integer.parseInt(sc.nextLine());
-        System.out.print("Rol en el Proyecto: "); String rol = sc.nextLine();
-        Asignacion a = new Asignacion(id, idIng, idProy, rol);
-        if (aDao.actualizar(a)) {
-            System.out.println("→ Asignación actualizada correctamente");
-        }
-    }
-    private static void eliminarAsignacion() throws Exception {
-        System.out.print("ID Asignación: "); int id = Integer.parseInt(sc.nextLine());
-        if (aDao.eliminar(id)) {
-            System.out.println("→ Asignación eliminada correctamente");
-        }
+    private void refreshProyectos(DefaultTableModel model) {
+        try {
+            model.setRowCount(0);
+            for (Proyecto p : pDao.listar()) {
+                model.addRow(new Object[]{p.getIdProy(), p.getNombre(), p.getFechaInicio(), p.getFechaFin()});
+            }
+        } catch (Exception ex) { showError(ex); }
     }
 
-    // --- Consultas requeridas ---
-    private static void listarProyectosPorDpto() throws Exception {
-        System.out.print("ID Departamento: ");
-        int id = Integer.parseInt(sc.nextLine());
-        List<Proyecto> lista = dDao.obtenerProyectosPorDepartamento(id);
-        lista.forEach(System.out::println);
+    // --- Asignacion Panel ---
+    private JPanel asignacionPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "ID Ingeniero", "ID Proyecto", "Rol"}, 0);
+        JTable table = new JTable(model);
+        refreshAsignaciones(model);
+
+        JPanel form = new JPanel(new GridLayout(0, 2, 5, 5));
+        JTextField id = new JTextField(), idIng = new JTextField(), idProy = new JTextField(), rol = new JTextField();
+        form.add(new JLabel("ID (para actualizar/eliminar):")); form.add(id);
+        form.add(new JLabel("ID Ingeniero:")); form.add(idIng);
+        form.add(new JLabel("ID Proyecto:")); form.add(idProy);
+        form.add(new JLabel("Rol en el Proyecto:")); form.add(rol);
+
+        JPanel btns = new JPanel();
+        JButton insertar = new JButton("Insertar"), actualizar = new JButton("Actualizar"), eliminar = new JButton("Eliminar"), refrescar = new JButton("Refrescar");
+        btns.add(insertar); btns.add(actualizar); btns.add(eliminar); btns.add(refrescar);
+
+        insertar.addActionListener(e -> {
+            try {
+                Asignacion a = new Asignacion(0, Integer.parseInt(idIng.getText()), Integer.parseInt(idProy.getText()), rol.getText());
+                if (aDao.insertar(a)) {
+                    JOptionPane.showMessageDialog(this, "Asignación insertada con ID " + a.getIdAsignacion());
+                    refreshAsignaciones(model);
+                }
+            } catch (Exception ex) { showError(ex); }
+        });
+        actualizar.addActionListener(e -> {
+            try {
+                Asignacion a = new Asignacion(Integer.parseInt(id.getText()), Integer.parseInt(idIng.getText()), Integer.parseInt(idProy.getText()), rol.getText());
+                if (aDao.actualizar(a)) {
+                    JOptionPane.showMessageDialog(this, "Asignación actualizada correctamente");
+                    refreshAsignaciones(model);
+                }
+            } catch (Exception ex) { showError(ex); }
+        });
+        eliminar.addActionListener(e -> {
+            try {
+                if (aDao.eliminar(Integer.parseInt(id.getText()))) {
+                    JOptionPane.showMessageDialog(this, "Asignación eliminada correctamente");
+                    refreshAsignaciones(model);
+                }
+            } catch (Exception ex) { showError(ex); }
+        });
+        refrescar.addActionListener(e -> refreshAsignaciones(model));
+
+        panel.add(new JScrollPane(table), BorderLayout.CENTER);
+        panel.add(form, BorderLayout.NORTH);
+        panel.add(btns, BorderLayout.SOUTH);
+        return panel;
     }
 
-    private static void listarIngenierosPorProyecto() throws Exception {
-        System.out.print("ID Proyecto: ");
-        int id = Integer.parseInt(sc.nextLine());
-        List<Ingeniero> lista = iDao.obtenerIngenierosPorProyecto(id);
-        lista.forEach(System.out::println);
+    private void refreshAsignaciones(DefaultTableModel model) {
+        try {
+            model.setRowCount(0);
+            for (Asignacion a : aDao.listar()) {
+                model.addRow(new Object[]{a.getIdAsignacion(), a.getIdIng(), a.getIdProy(), a.getRolProyecto()});
+            }
+        } catch (Exception ex) { showError(ex); }
+    }
+
+    // --- Proyectos por Departamento Panel ---
+    private JPanel proyectosPorDptoPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Nombre", "Fecha Inicio", "Fecha Fin", "Created At", "Updated At"}, 0);
+        JTable table = new JTable(model);
+
+        JPanel form = new JPanel();
+        JTextField idDpto = new JTextField(5);
+        JButton buscar = new JButton("Buscar");
+        form.add(new JLabel("ID Departamento:"));
+        form.add(idDpto);
+        form.add(buscar);
+
+        buscar.addActionListener(e -> {
+            try {
+                model.setRowCount(0);
+                int id = Integer.parseInt(idDpto.getText());
+                List<Proyecto> lista = dDao.obtenerProyectosPorDepartamento(id);
+                if (lista.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "No hay proyectos para este departamento.");
+                    return;
+                }
+                for (Proyecto p : lista) {
+                    model.addRow(new Object[]{
+                        p.getIdProy(),
+                        p.getNombre(),
+                        p.getFechaInicio(),
+                        (p.getFechaFin() != null ? p.getFechaFin() : "-"),
+                        (p.getCreatedAt() != null ? p.getCreatedAt() : "-"),
+                        (p.getUpdatedAt() != null ? p.getUpdatedAt() : "-")
+                    });
+                }
+            } catch (Exception ex) { showError(ex); }
+        });
+
+        panel.add(form, BorderLayout.NORTH);
+        panel.add(new JScrollPane(table), BorderLayout.CENTER);
+        return panel;
+    }
+
+    // --- Ingenieros por Proyecto Panel ---
+    private JPanel ingenierosPorProyectoPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "ID Dpto", "Nombre", "Apellido", "Especialidad", "Cargo"}, 0);
+        JTable table = new JTable(model);
+
+        JPanel form = new JPanel();
+        JTextField idProy = new JTextField(5);
+        JButton buscar = new JButton("Buscar");
+        form.add(new JLabel("ID Proyecto:"));
+        form.add(idProy);
+        form.add(buscar);
+
+        buscar.addActionListener(e -> {
+            try {
+                model.setRowCount(0);
+                int id = Integer.parseInt(idProy.getText());
+                List<Ingeniero> lista = iDao.obtenerIngenierosPorProyecto(id);
+                if (lista.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "No hay ingenieros asignados a este proyecto.");
+                    return;
+                }
+                for (Ingeniero i : lista) {
+                    model.addRow(new Object[]{
+                        i.getIdIng(),
+                        i.getIdDpto(),
+                        i.getNombre(),
+                        i.getApellido(),
+                        i.getEspecialidad(),
+                        i.getCargo()
+                    });
+                }
+            } catch (Exception ex) { showError(ex); }
+        });
+
+        panel.add(form, BorderLayout.NORTH);
+        panel.add(new JScrollPane(table), BorderLayout.CENTER);
+        return panel;
+    }
+
+    private void showError(Exception ex) {
+        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new MainApp().setVisible(true));
     }
 }

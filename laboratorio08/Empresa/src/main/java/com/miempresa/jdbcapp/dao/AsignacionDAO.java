@@ -1,4 +1,4 @@
-package main.java.com.miempresa.jdbcapp.dao;
+package com.miempresa.jdbcapp.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,8 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.java.com.miempresa.jdbcapp.model.Asignacion;
-import main.java.com.miempresa.jdbcapp.util.DbConnection;
+import com.miempresa.jdbcapp.model.Asignacion;
+import com.miempresa.jdbcapp.util.DbConnection;
 
 public class AsignacionDAO {
     public boolean insertar(Asignacion a) throws SQLException {
@@ -45,6 +45,25 @@ public class AsignacionDAO {
         try (Connection c = DbConnection.getConnection();
              Statement s = c.createStatement();
              ResultSet rs = s.executeQuery(sql)) {
+            while (rs.next()) {
+                Asignacion a = new Asignacion(
+                    rs.getInt("IDAsignacion"),
+                    rs.getInt("IDIng"),
+                    rs.getInt("IDProy"),
+                    rs.getString("Rol_Proyecto")
+                );
+                lista.add(a);
+            }
+        }
+        return lista;
+    }
+
+    public List<Asignacion> listar() throws Exception {
+        List<Asignacion> lista = new ArrayList<>();
+        String sql = "SELECT IDAsignacion, IDIng, IDProy, Rol_Proyecto FROM Asignacion";
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Asignacion a = new Asignacion(
                     rs.getInt("IDAsignacion"),

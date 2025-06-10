@@ -1,0 +1,6 @@
+{
+    "java.project.sourcePaths": [
+        "Empresa1/src",
+        "Empresa/src/main/java/com/miempresa/jdbcapp/view"
+    ]
+}

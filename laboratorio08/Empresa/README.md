@@ -1,18 +1,62 @@
-## Getting Started
+# Empresa Project
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+## Overview
+This project is a JavaFX application structured using Maven. It serves as a template for building Java applications with a graphical user interface.
 
-## Folder Structure
+## Project Structure
+```
+Empresa
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── com
+│   │   │       └── miempresa
+│   │   │           └── jdbcapp
+│   │   │               └── view
+│   │   │                   └── App.java
+│   │   └── resources
+│   │       └── com
+│   │           └── miempresa
+│   │               └── jdbcapp
+│   │                   └── view
+│   │                       └── mainview.fxml
+│   └── test
+│       └── java
+│           └── com
+│               └── miempresa
+│                   └── jdbcapp
+│                       └── view
+│                           └── AppTest.java
+├── pom.xml
+└── README.md
+```
 
-The workspace contains two folders by default, where:
+## Setup Instructions
+1. **Clone the repository**: 
+   ```bash
+   git clone <repository-url>
+   cd Empresa
+   ```
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+2. **Build the project**: 
+   Use Maven to build the project.
+   ```bash
+   mvn clean install
+   ```
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+3. **Run the application**: 
+   After building, you can run the application using:
+   ```bash
+   mvn javafx:run
+   ```
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+## Usage
+- The main application logic is contained in `App.java`.
+- The user interface is defined in `mainview.fxml`.
+- Test cases for the application can be found in `AppTest.java`.
 
-## Dependency Management
+## Dependencies
+This project uses Maven for dependency management. Ensure you have Maven installed to manage the project's dependencies effectively.
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+## License
+This project is licensed under the MIT License. See the LICENSE file for more details.

@@ -1,4 +1,4 @@
-package main.java.com.miempresa.jdbcapp.model;
+package com.miempresa.jdbcapp.model;
 
 import java.time.LocalDateTime;
 

@@ -1,16 +1,4 @@
 {
-    "java.project.sourcePaths": ["src"],
-    "java.project.outputPath": "bin",
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "c:\\mysql-connector-j-9.3.0\\mysql-connector-j-9.3.0\\mysql-connector-j-9.3.0.jar",
-        "c:\\java\\openjfx-17.0.15_windows-x64_bin-sdk\\javafx-sdk-17.0.15\\lib\\javafx.base.jar",
-        "c:\\java\\openjfx-17.0.15_windows-x64_bin-sdk\\javafx-sdk-17.0.15\\lib\\javafx.controls.jar",
-        "c:\\java\\openjfx-17.0.15_windows-x64_bin-sdk\\javafx-sdk-17.0.15\\lib\\javafx.fxml.jar",
-        "c:\\java\\openjfx-17.0.15_windows-x64_bin-sdk\\javafx-sdk-17.0.15\\lib\\javafx.graphics.jar",
-        "c:\\java\\openjfx-17.0.15_windows-x64_bin-sdk\\javafx-sdk-17.0.15\\lib\\javafx.media.jar",
-        "c:\\java\\openjfx-17.0.15_windows-x64_bin-sdk\\javafx-sdk-17.0.15\\lib\\javafx.swing.jar",
-        "c:\\java\\openjfx-17.0.15_windows-x64_bin-sdk\\javafx-sdk-17.0.15\\lib\\javafx.web.jar",
-        "c:\\java\\openjfx-17.0.15_windows-x64_bin-sdk\\javafx-sdk-17.0.15\\lib\\javafx-swt.jar"
-    ]
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.debug.settings.onBuildFailureProceed": true
 }
