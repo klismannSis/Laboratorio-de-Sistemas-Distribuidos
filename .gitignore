@@ -2,3 +2,9 @@
 *.jar
 /lib/
 .vscode/
+
+# Entornos virtuales de Python
+venv/
+.venv/
+env/
+ENV/
