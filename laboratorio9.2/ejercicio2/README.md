@@ -23,7 +23,7 @@ pip install mysql-connector-python
 
 Ejecuta este script 'Script_MySQL.sql' en tu servidor MySQL
 
-## 🚀 Ejecución
+## Ejecución
 
 1. Asegúrate de tener MySQL en ejecución.
 2. asegurate de tener el entorno configurado (mysql-connector-python habilitado)
