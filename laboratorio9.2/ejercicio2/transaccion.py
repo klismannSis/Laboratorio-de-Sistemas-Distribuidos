@@ -5,8 +5,8 @@ def conectar():
     return mysql.connector.connect(
         host='localhost',
         database='banco_transacciones',
-        user='root',   # alterar para maquina local
-        password='root' # alterar a maquina local
+        user='root',
+        password='root'
     )
 
 def mostrar_todas_las_cuentas(cursor):

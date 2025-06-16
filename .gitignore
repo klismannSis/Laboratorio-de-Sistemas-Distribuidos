@@ -1,0 +1,4 @@
+# Ignorar archivos JAR externos
+*.jar
+/lib/
+.vscode/
