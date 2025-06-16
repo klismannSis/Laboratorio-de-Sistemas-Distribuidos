@@ -26,7 +26,7 @@ Ejecuta este script 'Script_MySQL.sql' en tu servidor MySQL
 ## Ejecución
 
 1. Asegúrate de tener MySQL en ejecución.
-2. asegurate de tener el entorno configurado (mysql-connector-python habilitado)
+2. Asegúrate de tener el entorno configurado (mysql-connector-python habilitado)
 3. Modifica las credenciales de conexión en el archivo si es necesario:
 
 ```python
