@@ -1,6 +1,7 @@
 import socket
 import threading
 
+# Clase para manejar cada cliente conectado al servidor
 class ClientThread(threading.Thread):
     def __init__(self, client_socket, client_address, server):
         threading.Thread.__init__(self)
@@ -9,17 +10,22 @@ class ClientThread(threading.Thread):
         self.server = server
         self.username = None
         self.running = True
-
+    
+    # Este método maneja la recepción de mensajes del cliente y la lógica del chat.
+    
     def run(self):
         try:
             self.username = self.client_socket.recv(1024).decode()
             welcome_msg = f"*** {self.username} se ha unido al chat. ***"
             self.server.broadcast(welcome_msg, self)
+
+            # Recibir mensajes del cliente 
             while self.running:
                 data = self.client_socket.recv(1024).decode()
                 if not data:
                     break
-                if data == "LOGOUT":
+
+                if data == "LOGOUT": # cierra la conexión 
                     self.server.remove_client(self)
                     self.running = False
                     break
@@ -30,6 +36,7 @@ class ClientThread(threading.Thread):
                 else:
                     message = f"{self.username}: {data}"
                     self.server.broadcast(message, self)
+
         except:
             pass
         finally:
@@ -41,6 +48,7 @@ class ClientThread(threading.Thread):
         except:
             pass
 
+# Clase servidor de chat
 class ChatServer:
     def __init__(self, host='localhost', port=1500):
         self.clients = []
@@ -64,11 +72,11 @@ class ChatServer:
         finally:
             self.server_socket.close()
 
+    # MODIFICADO: ahora también envía al remitente
     def broadcast(self, message, sender):
         print(message)
         for client in self.clients:
-            if client != sender:
-                client.send_message(message)
+            client.send_message(message)
 
     def remove_client(self, client):
         if client in self.clients:
