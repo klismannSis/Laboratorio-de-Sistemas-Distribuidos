@@ -3,6 +3,7 @@ import sys
 import os
 import time
 
+# Este script se encarga de iniciar múltiples instancias del cliente GUI en diferentes terminales.
 def run_client(name):
     if sys.platform.startswith('win'):
         # Windows
@@ -17,8 +18,3 @@ if __name__ == "__main__":
     run_client("Usuario1")
     time.sleep(1)  # Pequeña pausa para separación visual
     run_client("Usuario2")
-
-
-
-
-
