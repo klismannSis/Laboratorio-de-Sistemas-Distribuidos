@@ -1,5 +1,7 @@
 import socket
 import threading
+import mysql.connector
+from mysql.connector import Error
 
 # Clase para manejar cada cliente conectado al servidor
 class ClientThread(threading.Thread):
@@ -16,6 +18,8 @@ class ClientThread(threading.Thread):
     def run(self):
         try:
             self.username = self.client_socket.recv(1024).decode()
+            # Registrar usuario en la BD
+            self.server.register_user(self.username)
             welcome_msg = f"*** {self.username} se ha unido al chat. ***"
             self.server.broadcast(welcome_msg, self)
 
@@ -35,6 +39,7 @@ class ClientThread(threading.Thread):
                         self.send_message(f"- {client.username}")
                 else:
                     message = f"{self.username}: {data}"
+                    self.server.save_message(self.username, data)
                     self.server.broadcast(message, self)
 
         except:
@@ -55,6 +60,49 @@ class ChatServer:
         self.host = host
         self.port = port
         self.server_socket = None
+        # Conexión a la base de datos
+        try:
+            self.db = mysql.connector.connect(
+                host='localhost',
+                user='root',
+                password='root',
+                database='chatdb'
+            )
+            self.cursor = self.db.cursor()
+            self.create_tables()
+        except Error as e:
+            print(f"Error al conectar a la base de datos: {e}")
+            self.db = None
+            self.cursor = None
+
+    def create_tables(self):
+        # Crear tabla de usuarios
+        self.cursor.execute('''CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(255) UNIQUE NOT NULL
+        )''')
+        # Crear tabla de mensajes
+        self.cursor.execute('''CREATE TABLE IF NOT EXISTS messages (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(255) NOT NULL,
+            message TEXT NOT NULL,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )''')
+        self.db.commit()
+
+    def register_user(self, username):
+        try:
+            self.cursor.execute("INSERT IGNORE INTO users (username) VALUES (%s)", (username,))
+            self.db.commit()
+        except Error as e:
+            print(f"Error al registrar usuario: {e}")
+
+    def save_message(self, username, message):
+        try:
+            self.cursor.execute("INSERT INTO messages (username, message) VALUES (%s, %s)", (username, message))
+            self.db.commit()
+        except Error as e:
+            print(f"Error al guardar mensaje: {e}")
 
     def start(self):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -71,6 +119,9 @@ class ChatServer:
             print("Servidor apagado.")
         finally:
             self.server_socket.close()
+            if self.db:
+                self.cursor.close()
+                self.db.close()
 
     # MODIFICADO: ahora también envía al remitente
     def broadcast(self, message, sender):
